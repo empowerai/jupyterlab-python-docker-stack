@@ -264,8 +264,8 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master
 COPY --from=files /files /
 COPY --from=files /files/var/backups/skel ${HOME}
 
-EXPOSE 8888
 
 ## Configure container startup
 ENTRYPOINT ["tini", "-g", "--"]
 CMD ["start-notebook.sh"]
+

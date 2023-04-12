@@ -1,0 +1,59 @@
+version: "3.8"
+services:
+  gpu-jupyter-noconda-py311:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities:
+              - gpu
+    # # Set hardware limits: one GPU, max. 48GB RAM, max. 31 GPUs
+    #         - driver: nvidia
+    #           capabilities: [gpu]
+    #           device_ids: ["0"]  # select one GPU
+    #     limits:
+    #       cpus: "31.0"
+    #       memory: 48g
+    ports:
+      - 8888:8888
+      - 5005:5000
+    volumes:
+      - /home/nvadmin/data:/home/${NB_USER}/work
+      - hf_cache:/home/${NB_USER}/.cache/huggingface/hub
+    working_dir: /home/${NB_USER}
+    environment:
+      # enable sudo permissions
+      GRANT_SUDO: "yes"
+      CHOWN_HOME: "yes"
+      CHOWN_HOME_OPTS: "-R"
+      # CHOWN_EXTRA: "/home/${NB_USER}/.cache"
+      # CHOWN_OPTS: "-R"
+      # JUPYTER_ENABLE_LAB: "yes"
+    # .env vars
+      NB_USER: $NB_USER
+      NB_UID: $NB_UID
+      NB_GID: $NB_GID
+      MLFLOW_S3_ENDPOINT_URL: $MLFLOW_S3_ENDPOINT_URL
+      MLFLOW_TRACKING_URI: $MLFLOW_TRACKING_URI
+      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID`
+      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+      CHROMA_API_IMPL: $CHROMA_API_IMPL
+      CHROMA_SERVER_HOST: $CHROMA_SERVER_HOST
+      CHROMA_SERVER_HTTP_PORT: $CHROMA_SERVER_HTTP_PORT
+      
+    user:
+      "root"
+    restart: always
+    shm_size: '2gb'
+    image: ncicto/gpu-jupyter-noconda-py311:latest
+    container_name: gpu-jupyter-noconda-py311
+    # image: cschranz/gpu-jupyter:v1.5_cuda-11.6_ubuntu-20.04_python-only
+    # container_name: gpu-jupyter-cschranz
+    # Public bridge neccesary when running on same host as mlflow service
+    networks:
+      - public
+networks:
+  public:
+    driver: bridge    
+volumes:
+  hf_cache:
