@@ -1,4 +1,5 @@
-FROM jupyterlab/cuda/python/scipy:latest
+# FROM jupyterlab/cuda/python/base:3.11.2
+FROM jupyterlab/python/base:3.11.2 
 
 USER root
 
@@ -17,7 +18,8 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir torch torchvision torchaudio torchviz --extra-index-url https://download.pytorch.org/whl/cu118
+# RUN pip install --no-cache-dir torch+cu118 torchvision torchaudio torchviz --extra-index-url https://download.pytorch.org/whl/cu118
+RUN pip install --no-cache-dir torch==2.1.2+cu118 torchvision torchaudio torchviz --extra-index-url https://download.pytorch.org/whl/cu118
 
 RUN pip install --no-cache-dir git+https://github.com/facebookresearch/detectron2.git pytesseract
 RUN pip install --no-cache-dir "itsdangerous<2.1.0"
@@ -44,11 +46,29 @@ RUN pip install --no-cache-dir \
     markdown \ 
     nlptest
 
+RUN pip install --no-cache-dir mlflow langchain
+
 # RUN pip install --no-cache-dir mlflow Hold until SHAP/NUMBA dependancy updated for python 3.11, should be done in april
 
 RUN touch /home/${NB_USER}/firstrun
 COPY ./forcepopulate.sh /usr/local/bin/before-notebook.d/ 
 RUN chmod 755 /usr/local/bin/before-notebook.d/forcepopulate.sh
 
-USER ${NB_USER}
+RUN rm /usr/local/lib/python3.11/site-packages/jupyterlab/staging/yarn.lock
 
+USER ${NB_USER}
+USER root
+
+RUN pip install --no-cache-dir --upgrade \
+    transformers \
+    datasets \
+    accelerate \
+    bitsandbytes \
+    chromadb \
+    nlptest \
+    sentence-transformers==2.2.2 \
+    ipywidgets \
+    InstructorEmbedding
+    # buildkit
+
+USER ${NB_USER}
