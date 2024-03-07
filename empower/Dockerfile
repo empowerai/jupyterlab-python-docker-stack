@@ -1,5 +1,5 @@
-# FROM jupyterlab/cuda/python/base:3.11.2
-FROM jupyterlab/python/base:3.11.2 
+FROM jupyterlab/cuda/python/base:3.11.2
+# FROM jupyterlab/python/base:3.11.2 
 
 USER root
 
@@ -43,8 +43,7 @@ RUN pip install --no-cache-dir \
     gpt-index \
     pymupdf \
     chromadb \
-    markdown \ 
-    nlptest
+    markdown
 
 RUN pip install --no-cache-dir mlflow langchain
 
@@ -65,10 +64,31 @@ RUN pip install --no-cache-dir --upgrade \
     accelerate \
     bitsandbytes \
     chromadb \
-    nlptest \
     sentence-transformers==2.2.2 \
     ipywidgets \
-    InstructorEmbedding
+    InstructorEmbedding \
+    einops \
+    ragas \
+    gritlm
+
+RUN pip install --no-cache-dir --upgrade \
+    llama-index-core \
+    llama-index-readers-file \
+    # llama-index-llms-ollama \
+    # llama-index-embeddings-ollama \
+    llama-index-embeddings-huggingface \
+    llama-index-llms-huggingface \
+    llama-index-tools-vector-db \ 
+    llama-index-vector-stores-chroma \
+    llama-index-readers-chroma \
+    llama-index-readers-smart-pdf-loader \
+    llama-index-llms-langchain \
+    llama-index-embeddings-langchain \
+    # llama-index-embeddings-text-embeddings-inference \
+    # llama-index-embeddings-huggingface-optimum \
+    # llama-index-embeddings-mistralai \
+    llama-index-embeddings-instructor
+
     # buildkit
 
 USER ${NB_USER}
