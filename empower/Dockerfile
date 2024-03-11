@@ -18,11 +18,10 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# RUN pip install --no-cache-dir torch+cu118 torchvision torchaudio torchviz --extra-index-url https://download.pytorch.org/whl/cu118
 RUN pip install --no-cache-dir torch==2.1.2+cu118 torchvision torchaudio torchviz --extra-index-url https://download.pytorch.org/whl/cu118
-
 RUN pip install --no-cache-dir git+https://github.com/facebookresearch/detectron2.git pytesseract
 RUN pip install --no-cache-dir "itsdangerous<2.1.0"
+
 RUN pip install --no-cache-dir \
     transformers \
     datasets \
@@ -40,13 +39,12 @@ RUN pip install --no-cache-dir \
     python-Levenshtein \
     polyfuzz \
     boto3 \
-    gpt-index \
     pymupdf \
     chromadb \
     markdown
 
-RUN pip install --no-cache-dir mlflow langchain
 
+RUN pip install --no-cache-dir --upgrade mlflow langchain
 # RUN pip install --no-cache-dir mlflow Hold until SHAP/NUMBA dependancy updated for python 3.11, should be done in april
 
 RUN touch /home/${NB_USER}/firstrun
@@ -63,7 +61,7 @@ RUN pip install --no-cache-dir --upgrade \
     datasets \
     accelerate \
     bitsandbytes \
-    chromadb \
+    chromadb==0.4.22 \
     sentence-transformers==2.2.2 \
     ipywidgets \
     InstructorEmbedding \
@@ -74,21 +72,15 @@ RUN pip install --no-cache-dir --upgrade \
 RUN pip install --no-cache-dir --upgrade \
     llama-index-core \
     llama-index-readers-file \
-    # llama-index-llms-ollama \
-    # llama-index-embeddings-ollama \
     llama-index-embeddings-huggingface \
-    llama-index-llms-huggingface \
-    llama-index-tools-vector-db \ 
-    llama-index-vector-stores-chroma \
-    llama-index-readers-chroma \
-    llama-index-readers-smart-pdf-loader \
-    llama-index-llms-langchain \
     llama-index-embeddings-langchain \
-    # llama-index-embeddings-text-embeddings-inference \
-    # llama-index-embeddings-huggingface-optimum \
-    # llama-index-embeddings-mistralai \
-    llama-index-embeddings-instructor
-
-    # buildkit
+    llama-index-embeddings-instructor \
+    llama-index-evaluation-tonic-validate \
+    llama-index-extractors-entity \
+    llama-index-extractors-marvin \
+    llama-index-llms-huggingface \
+    llama-index-llms-langchain \
+    llama-index-postprocessor-sbert-rerank \
+    llama-index-vector-stores-chroma
 
 USER ${NB_USER}
